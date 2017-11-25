@@ -111,6 +111,7 @@ class server:
                     self.sem.release()
                     return
                 print("recv from dst host.")
+                print(dst_host_recv)
                 self.send(client_sock,dst_host_recv)
                 print("send to client.")
             except:

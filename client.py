@@ -139,6 +139,7 @@ class client:
                 print("recv from host.")
                 #print(server_recv)
                 iesock.send(server_recv)
+                print(server_recv)
                 print("send to ie.")
             except:
                 self.sem.release()
