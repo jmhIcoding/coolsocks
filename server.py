@@ -1,5 +1,7 @@
 #coding:utf8
 __author__ = 'jmh081701'
+import sys
+sys.path.append("../")
 from crypto.rc4 import  rc4
 import socket
 import  define
