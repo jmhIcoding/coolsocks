@@ -17,7 +17,7 @@ class client:
         self.hellopkt=configs["hello"]
         self.serverip=configs["server_ip"]
         self.serverport=configs["server_port"]
-
+        self.localport=configs['local_port']
         self.threads=[]
         try:
             self.server_sock=socket.socket()
@@ -25,24 +25,25 @@ class client:
 
             self.server_sock.send(rc4(self.prepwd,self.hellopkt))
             #try to login in remote server
-            info=self.server_sock.recv(define.BUFFERSIZE)
+            info=self.recv(self.server_sock,define.BUFFERSIZE)
         except:
-            print("connnect server error. Please check the configure file.")
+            print("Connnect server error. Please check the configure file.")
             self.server_state=False
             exit(1)
         print(info)
         if info!=bytes("good!!",encoding="utf8"):
-            print("connnect server error. Please check the configure file.")
+            print("Connnect server error. Please check the configure file.")
             self.server_state=False
             exit(1)
         else:
-            print("connect server well. Enjoy yourself.")
+            print("Connect server well. Enjoy yourself.")
             self.server_sock.close()
             self.server_state=True
         self.local_sock=socket.socket()
-        self.local_sock.bind((define.LOCALADDRESS,localip))
+        print((define.LOCALADDRESS,self.localport))
+        self.local_sock.bind((define.LOCALADDRESS,self.localport))
         self.local_sock.listen(define.MAXLISTENING)
-        print("local bind well.")
+        print("local bind well. Here goes the vacation.")
 
         self.sem=threading.Semaphore(define.MAXLISTENING)
 
@@ -51,10 +52,11 @@ class client:
             th.join()
 
     def run(self):
-        iesock,ieaddr=self.local_sock.accept()
-        th =threading.Thread(target=self.loop,args=[iesock,ieaddr])
-        th.start()
-        self.threads.append(th)
+        while True:
+            iesock,ieaddr=self.local_sock.accept()
+            th =threading.Thread(target=self.loop,args=[iesock,ieaddr])
+            th.start()
+            self.threads.append(th)
     def gen_server_sock(self):
         if self.server_state==False:
             exit(-1)
@@ -62,7 +64,7 @@ class client:
         server_sock.connect((self.serverip,self.serverport))
         server_sock.send(rc4(self.prepwd,self.hellopkt))
         #try to login in remote server
-        info=self.server_sock.recv(define.BUFFERSIZE)
+        info=self.recv(server_sock,define.BUFFERSIZE)
         #print(info)
         if info!=bytes("good!!",encoding="utf8"):
             print("connnect server error. Please check the configure file.")
@@ -76,17 +78,19 @@ class client:
     def loop(self,iesock,ieaddr):
         try:
             infos=iesock.recv(define.BUFFERSIZE)
-            print(infos)
+            print('from ie ',infos)
             data=infos
             server_sock=self.gen_server_sock()
             self.send(server_sock,data)
             info_from_server=self.recv(server_sock)
             if info_from_server==bytes('nice'):
                 iesock.send(b'\x00\x5a'+infos[2:8])
+                print("remote server can proxy this host.")
             else:
                 iesock.send(b'\x00\x00'+infos[2:8])
                 print("remote server can't proxy this host.")
                 return
+
             th =threading.Thread(target=self.recv_fromie,args=[iesock,server_sock])
             self.sem.acquire()
             th.start()

@@ -37,34 +37,39 @@ class server:
         print(r)
         return r
     def run(self):
-        client_sock,client_addr=self.local_sock.accept()
-        th =threading.Thread(target=self.loop,args=[client_sock,client_addr])
-        th.start()
-        self.threads.append(th)
+        while True:
+            client_sock,client_addr=self.local_sock.accept()
+            th =threading.Thread(target=self.loop,args=[client_sock,client_addr])
+            th.start()
+            self.threads.append(th)
 
     def loop(self,client_sock,client_addr):
         try:
             login_infos=self.recv(client_sock)
-            if login_infos!=self.hellopkt:
+
+            if login_infos!=bytes(self.hellopkt,encoding="utf8"):
                 self.send(client_sock,bytes("error!!"))
                 client_sock.close()
                 return
             else:
-                self.send(client_sock,bytes("good!!"))
+                self.send(client_sock,bytes("good!!",encoding="utf8"))
+            print("good!client has login now.")
             infos=self.recv(client_sock)
             print(infos)
             port=struct.unpack("!H",infos[2:4])[0]
             ip=struct.unpack("!I",infos[4:8])[0]
             dst_host_port=port
             dst_host_ip=socket.inet_ntoa(struct.pack('I',socket.htonl(ip)))
-            print(dst_host_ip,dst_host_port)
+
             try:
                 dst_host_sock=socket.socket()
                 dst_host_sock.connect((dst_host_ip,dst_host_port))
                 self.send(client_sock,bytes('nice'))
+                print("connect host well.",dst_host_ip,dst_host_port)
             except:
                 self.send(client_sock,b'')
                 client_sock.close()
+                print("connect host fail.",dst_host_ip,dst_host_port)
                 return
             th =threading.Thread(target=self.recv_fromclient,args=[client_sock,dst_host_sock])
             self.sem.acquire()
