@@ -1,11 +1,15 @@
 __author__ = 'jmh081701'
 #coding:utf8
 import struct
+
 from crypto.hash import  hashkey
 from crypto.basetool import str2bytes
 from  crypto.basetool import bytes2str
+
 import  threading
+
 lock=threading.Semaphore(1)
+
 def rc4(_prepwd,_cipher,iKeyLen=None):
     '''
     :param _prepwd: 预主密钥
@@ -43,11 +47,12 @@ def rc4(_prepwd,_cipher,iKeyLen=None):
     rst=b''
     j=0
     i=0
+    cil=16
     while True:
         #print(i,len(_cipher))
         if i>=len(_cipher):
             break
-        if i < 32:
+        if i < cil:
             _i=i%256
             j=(j+Sbox[_i])%256
             #tmp=Sbox[_i]
@@ -56,7 +61,7 @@ def rc4(_prepwd,_cipher,iKeyLen=None):
             t=(Sbox[_i]+Sbox[j])%256
             _new=_cipher[i]^Sbox[t]
         else:
-            rst+=_cipher[32:]
+            rst+=_cipher[cil:]
             break
             _new=_cipher[i]
         _new=struct.pack("!B",_new)
