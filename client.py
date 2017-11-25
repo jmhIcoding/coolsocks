@@ -73,9 +73,16 @@ class client:
             exit(1)
         return server_sock
     def send(self,sock,data):
-        return sock.send(rc4(self.prepwd,data))
+        print("prepare encrypt....")
+        encrpyted=rc4(self.prepwd,data)
+        print("encrypted well",encrpyted)
+        s=sock.send(encrpyted)
+        print(s)
+        return s
     def recv(self,sock,buffsize=define.BUFFERSIZE):
-        return rc4(self.prepwd,sock.recv(buffsize))
+        r= rc4(self.prepwd,sock.recv(buffsize))
+        print(r)
+        return r
 
     def loop(self,iesock,ieaddr):
         try:
@@ -85,7 +92,7 @@ class client:
             server_sock=self.gen_server_sock()
             self.send(server_sock,data)
             info_from_server=self.recv(server_sock)
-            if info_from_server==bytes('nice'):
+            if info_from_server==bytes('nice',encoding="utf8"):
                 iesock.send(b'\x00\x5a'+infos[2:8])
                 print("remote server can proxy this host.")
             else:
@@ -113,7 +120,7 @@ class client:
                     self.sem.release()
                     return
                 print("recv from ie")
-                #print(info)
+                print(info)
                 data=info
                 self.send(server_sock,data)
                 print("send to host.")
@@ -130,6 +137,7 @@ class client:
                     self.sem.release()
                     return
                 print("recv from host.")
+                print(server_recv)
                 iesock.send(server_recv)
                 print("send to ie.")
             except:

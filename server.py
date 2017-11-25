@@ -62,11 +62,10 @@ class server:
             ip=struct.unpack("!I",infos[4:8])[0]
             dst_host_port=port
             dst_host_ip=socket.inet_ntoa(struct.pack('I',socket.htonl(ip)))
-
             try:
                 dst_host_sock=socket.socket()
                 dst_host_sock.connect((dst_host_ip,dst_host_port))
-                self.send(client_sock,bytes('nice'))
+                self.send(client_sock,bytes('nice',encoding="utf8"))
                 print("connect host well.",dst_host_ip,dst_host_port)
             except:
                 self.send(client_sock,b'')
@@ -86,6 +85,7 @@ class server:
     def recv_fromclient(self,client_sock,dst_host_sock):
         while True:
             try:
+                print("prepare recv from client.")
                 info =self.recv(client_sock)
                 if len(info)==0:
                     client_sock.close()
@@ -103,6 +103,7 @@ class server:
     def recv_from_dsthost(self,client_sock,dst_host_sock):
         while True:
             try:
+                print("prepare recv from dst host.")
                 dst_host_recv=dst_host_sock.recv(define.BUFFERSIZE)
                 if len(dst_host_recv)==0:
                     dst_host_sock.close()

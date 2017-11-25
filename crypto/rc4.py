@@ -4,7 +4,8 @@ import struct
 from crypto.hash import  hashkey
 from crypto.basetool import str2bytes
 from  crypto.basetool import bytes2str
-
+import  threading
+lock=threading.Semaphore(1)
 def rc4(_prepwd,_cipher,iKeyLen=None):
     '''
     :param _prepwd: 预主密钥
@@ -12,6 +13,7 @@ def rc4(_prepwd,_cipher,iKeyLen=None):
     :param iKeyLen: 密钥长度
     :return:
     '''
+    #lock.acquire()
     if type(_prepwd)==type("abcd"):
         _prepwd=hashkey(_prepwd)
     if type(_cipher)==type("abcd"):
@@ -42,17 +44,20 @@ def rc4(_prepwd,_cipher,iKeyLen=None):
     j=0
     i=0
     while True:
+        #print(i,len(_cipher))
         if i>=len(_cipher):
             break
-        j=(j+Sbox[i])%256
-        tmp=Sbox[i]
-        Sbox[i]=Sbox[j]
+        _i=i%256
+        j=(j+Sbox[_i])%256
+        tmp=Sbox[_i]
+        Sbox[_i]=Sbox[j]
         Sbox[j]=tmp
-        t=(Sbox[i]+Sbox[j])%256
+        t=(Sbox[_i]+Sbox[j])%256
         _new=_cipher[i]^Sbox[t]
         _new=struct.pack("!B",_new)
         rst+=_new
-        i=(i+1)%256
+        i=i+1
+    #lock.release()
     return rst
 def test_rc4():
     if rc4("abcdefg",b'\x01\x02')!=b'\xea\xb6':
