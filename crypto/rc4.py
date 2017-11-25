@@ -68,3 +68,4 @@ if __name__ == '__main__':
     decrypted=rc4("abcdef",encrypted)
     print('解密后',decrypted)
     print(bytes2str(decrypted))
+    print(rc4("abcdef",b""))

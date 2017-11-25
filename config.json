@@ -1,0 +1,7 @@
+{
+  "type":"client",
+  "local_port":9090,
+  "server_ip":"67.218.148.94",
+  "server_port":9091,
+  "password":"12345678uestc"
+}
