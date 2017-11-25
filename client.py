@@ -25,13 +25,13 @@ class client:
 
             self.server_sock.send(rc4(self.prepwd,self.hellopkt))
             #try to login in remote server
-            info=self.server_sock.recv(1024)
+            info=self.server_sock.recv(define.BUFFERSIZE)
         except:
             print("connnect server error. Please check the configure file.")
             self.server_state=False
             exit(1)
-        #print(info)
-        if info!=bytes("good!!"):
+        print(info)
+        if info!=bytes("good!!",encoding="utf8"):
             print("connnect server error. Please check the configure file.")
             self.server_state=False
             exit(1)
@@ -64,7 +64,7 @@ class client:
         #try to login in remote server
         info=self.server_sock.recv(define.BUFFERSIZE)
         #print(info)
-        if info!=bytes("good!!"):
+        if info!=bytes("good!!",encoding="utf8"):
             print("connnect server error. Please check the configure file.")
             exit(1)
         return server_sock
@@ -75,7 +75,7 @@ class client:
 
     def loop(self,iesock,ieaddr):
         try:
-            infos=iesock.recv(1024)
+            infos=iesock.recv(define.BUFFERSIZE)
             print(infos)
             data=infos
             server_sock=self.gen_server_sock()

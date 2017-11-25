@@ -27,9 +27,15 @@ class server:
     def __del__(self):
         pass
     def send(self,sock,data):
-        return sock.send(rc4(self.prepwd,data))
+        s= sock.send(rc4(self.prepwd,data))
+        print("rc4 send sock")
+        print(s)
+        return s
     def recv(self,sock,buffsize=define.BUFFERSIZE):
-        return rc4(self.prepwd,sock.recv(buffsize))
+        r= rc4(self.prepwd,sock.recv(buffsize))
+        print("rc4 decrypto recv ")
+        print(r)
+        return r
     def run(self):
         client_sock,client_addr=self.local_sock.accept()
         th =threading.Thread(target=self.loop,args=[client_sock,client_addr])
