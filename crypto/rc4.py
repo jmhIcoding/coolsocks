@@ -43,11 +43,12 @@ def rc4(_prepwd,_cipher,iKeyLen=None):
     rst=b''
     j=0
     i=0
+    return _cipher
     while True:
         #print(i,len(_cipher))
         if i>=len(_cipher):
             break
-        if i % 3==0:
+        if i % 8==0:
             _i=i%256
             j=(j+Sbox[_i])%256
             #tmp=Sbox[_i]
