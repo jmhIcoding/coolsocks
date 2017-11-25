@@ -49,9 +49,9 @@ def rc4(_prepwd,_cipher,iKeyLen=None):
             break
         _i=i%256
         j=(j+Sbox[_i])%256
-        tmp=Sbox[_i]
-        Sbox[_i]=Sbox[j]
-        Sbox[j]=tmp
+        #tmp=Sbox[_i]
+        #Sbox[_i]=Sbox[j]
+        #Sbox[j]=tmp
         t=(Sbox[_i]+Sbox[j])%256
         _new=_cipher[i]^Sbox[t]
         _new=struct.pack("!B",_new)
