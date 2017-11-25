@@ -96,7 +96,7 @@ class client:
                 iesock.send(b'\x00\x5a'+infos[2:8])
                 print("remote server can proxy this host.")
             else:
-                iesock.send(b'\x00\x00'+infos[2:8])
+                iesock.send(b'\x00\x5b'+infos[2:8])
                 print("remote server can't proxy this host.")
                 return
 

@@ -57,7 +57,8 @@ class server:
                 self.send(client_sock,bytes("good!!",encoding="utf8"))
             print("good!client has login now.")
             infos=self.recv(client_sock)
-            #print(infos)
+            if infos[2]==b'\x02':
+                print(infos)
             port=struct.unpack("!H",infos[2:4])[0]
             ip=struct.unpack("!I",infos[4:8])[0]
             dst_host_port=port
