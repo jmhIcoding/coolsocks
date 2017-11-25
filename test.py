@@ -1,4 +1,5 @@
-﻿import socket
+﻿#coding:utf8
+import socket
 import struct
 import  threading
 sock=socket.socket()

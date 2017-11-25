@@ -1,3 +1,4 @@
+#coding:utf8
 __author__ = 'jmh081701'
 _mod=65521
 _p=1999

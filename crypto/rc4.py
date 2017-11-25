@@ -1,4 +1,5 @@
 __author__ = 'jmh081701'
+#coding:utf8
 import struct
 from crypto.hash import  hashkey
 from crypto.basetool import str2bytes
