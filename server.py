@@ -6,12 +6,8 @@ import  define
 import  config
 import  threading
 import  struct
-configs=config.get_config()
-prepwd=configs["password"]
-hellopkt=configs["hello"]
-serverip=configs["server_ip"]
-serverport=configs["server_port"]
-localip=configs["local_ip"]
+configs=config.get_config("ssever.json")
+
 class server:
     def __init__(self,configs):
         if (configs["type"]!="server"):
@@ -105,5 +101,5 @@ class server:
             except:
                 self.sem.release()
                 return
-coolsocks_server=server()
+coolsocks_server=server(configs)
 coolsocks_server.run()

@@ -7,11 +7,7 @@ import  config
 import  threading
 import  struct
 configs=config.get_config()
-prepwd=configs["password"]
-hellopkt=configs["hello"]
-serverip=configs["server_ip"]
-serverport=configs["server_port"]
-localip=configs["local_ip"]
+
 class client:
     def __init__(self,configs):
         if (configs["type"]!="client"):
@@ -21,19 +17,24 @@ class client:
         self.hellopkt=configs["hello"]
         self.serverip=configs["server_ip"]
         self.serverport=configs["server_port"]
-        self.localip=configs["local_ip"]
 
-        self.server_sock=socket.socket()
-        self.server_sock.connect((self.serverip,self.serverport))
+        self.threads=[]
+        try:
+            self.server_sock=socket.socket()
+            self.server_sock.connect((self.serverip,self.serverport))
 
-        self.server_sock.send(rc4(self.prepwd,self.hellopkt))
-        #try to login in remote server
-        info=self.server_sock.recv(1024)
+            self.server_sock.send(rc4(self.prepwd,self.hellopkt))
+            #try to login in remote server
+            info=self.server_sock.recv(1024)
+        except:
+            print("connnect server error. Please check the configure file.")
+            self.server_state=False
+            exit(1)
         #print(info)
         if info!=bytes("good!!"):
             print("connnect server error. Please check the configure file.")
-            exit(1)
             self.server_state=False
+            exit(1)
         else:
             print("connect server well. Enjoy yourself.")
             self.server_sock.close()
@@ -42,10 +43,8 @@ class client:
         self.local_sock.bind((define.LOCALADDRESS,localip))
         self.local_sock.listen(define.MAXLISTENING)
         print("local bind well.")
-        self.threads=[]
+
         self.sem=threading.Semaphore(define.MAXLISTENING)
-
-
 
     def __del__(self):
         for th in self.threads:
@@ -130,5 +129,5 @@ class client:
             except:
                 self.sem.release()
                 return
-coolsock_client=client()
+coolsock_client=client(configs)
 coolsock_client.run()
