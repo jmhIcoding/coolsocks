@@ -47,7 +47,7 @@ def rc4(_prepwd,_cipher,iKeyLen=None):
     rst=b''
     j=0
     i=0
-    cil=4
+    cil=0
     while True:
         #print(i,len(_cipher))
         if i>=len(_cipher):
