@@ -32,7 +32,7 @@ class client:
             print("Connnect server error. Please check the configure file.")
             self.server_state=False
             exit(1)
-        print(info)
+        #print(info)
         if info!=bytes("good!!",encoding="utf8"):
             print("Connnect server error. Please check the configure file.")
             self.server_state=False
@@ -42,7 +42,7 @@ class client:
             self.server_sock.close()
             self.server_state=True
         self.local_sock=socket.socket()
-        print((define.LOCALADDRESS,self.localport))
+        #print((define.LOCALADDRESS,self.localport))
         self.local_sock.bind((define.LOCALADDRESS,self.localport))
         self.local_sock.listen(define.MAXLISTENING)
         print("local bind well. Here goes the vacation.")
@@ -73,21 +73,21 @@ class client:
             exit(1)
         return server_sock
     def send(self,sock,data):
-        print("prepare encrypt....")
+        #print("prepare encrypt....")
         encrpyted=rc4(self.prepwd,data)
-        print("encrypted well",encrpyted)
+        #print("encrypted well",encrpyted)
         s=sock.send(encrpyted)
-        print(s)
+        #print(s)
         return s
     def recv(self,sock,buffsize=define.BUFFERSIZE):
         r= rc4(self.prepwd,sock.recv(buffsize))
-        print(r)
+        #print(r)
         return r
 
     def loop(self,iesock,ieaddr):
         try:
             infos=iesock.recv(define.BUFFERSIZE)
-            print('from ie ',infos)
+            print('from ie ')#infos)
             data=infos
             server_sock=self.gen_server_sock()
             self.send(server_sock,data)
@@ -120,7 +120,7 @@ class client:
                     self.sem.release()
                     return
                 print("recv from ie")
-                print(info)
+                #print(info)
                 data=info
                 self.send(server_sock,data)
                 print("send to host.")
@@ -137,7 +137,7 @@ class client:
                     self.sem.release()
                     return
                 print("recv from host.")
-                print(server_recv)
+                #print(server_recv)
                 iesock.send(server_recv)
                 print("send to ie.")
             except:

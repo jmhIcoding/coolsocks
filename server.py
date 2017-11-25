@@ -30,13 +30,13 @@ class server:
         pass
     def send(self,sock,data):
         s= sock.send(rc4(self.prepwd,data))
-        print("rc4 send sock")
-        print(s)
+        #print("rc4 send sock")
+        #print(s)
         return s
     def recv(self,sock,buffsize=define.BUFFERSIZE):
         r= rc4(self.prepwd,sock.recv(buffsize))
-        print("rc4 decrypto recv ")
-        print(r)
+        #print("rc4 decrypto recv ")
+        #print(r)
         return r
     def run(self):
         while True:
@@ -57,7 +57,7 @@ class server:
                 self.send(client_sock,bytes("good!!",encoding="utf8"))
             print("good!client has login now.")
             infos=self.recv(client_sock)
-            print(infos)
+            #print(infos)
             port=struct.unpack("!H",infos[2:4])[0]
             ip=struct.unpack("!I",infos[4:8])[0]
             dst_host_port=port
