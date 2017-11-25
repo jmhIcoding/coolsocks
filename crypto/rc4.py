@@ -43,12 +43,11 @@ def rc4(_prepwd,_cipher,iKeyLen=None):
     rst=b''
     j=0
     i=0
-    return _cipher
     while True:
         #print(i,len(_cipher))
         if i>=len(_cipher):
             break
-        if i % 8==0:
+        if i < 32:
             _i=i%256
             j=(j+Sbox[_i])%256
             #tmp=Sbox[_i]
@@ -57,6 +56,8 @@ def rc4(_prepwd,_cipher,iKeyLen=None):
             t=(Sbox[_i]+Sbox[j])%256
             _new=_cipher[i]^Sbox[t]
         else:
+            rst+=_cipher[32:]
+            break
             _new=_cipher[i]
         _new=struct.pack("!B",_new)
         rst+=_new
