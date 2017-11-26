@@ -33,11 +33,13 @@ def rc4(_prepwd,_cipher,iKeyLen=None):
         Key.append(0)
     for i in range(1):
         Sbox[i]=128
-    '''
+
     k=0
     for i in range(256):
         Key[i]=_prepwd[k]
         k=(k+1)%iKeyLen
+        Sbox[0]=(Sbox[0]*11+Key[i])%256
+    '''
     j=0
     for i in  range(256):
         j=(j+Sbox[i]+Key[i])%256
@@ -58,12 +60,6 @@ def rc4(_prepwd,_cipher,iKeyLen=None):
         if i>=len(_cipher):
             break
         if i < cil:
-            _i=i%256
-            j=(j+Sbox[_i])%256
-            #tmp=Sbox[_i]
-            #Sbox[_i]=Sbox[j]
-            #Sbox[j]=tmp
-            #t=(Sbox[_i]+Sbox[j])%256
             _new=_cipher[i]^Sbox[0]
         else:
             rst+=_cipher[cil:]
