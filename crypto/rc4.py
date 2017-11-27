@@ -31,14 +31,14 @@ def rc4(_prepwd,_cipher,iKeyLen=None):
     for i in range(256):
         Sbox.append(i)
         Key.append(0)
-    for i in range(1):
-        Sbox[i]=128
+    Sbox[0]=127
 
     k=0
     for i in range(256):
         Key[i]=_prepwd[k]
         k=(k+1)%iKeyLen
-        Sbox[0]=(Sbox[0]*11+Key[i])%256
+    Sbox[0]=_prepwd[0]%256
+    #print(Sbox[0])
     '''
     j=0
     for i in  range(256):
