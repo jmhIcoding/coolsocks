@@ -57,8 +57,8 @@ class server:
                 self.send(client_sock,bytes("good!!",encoding="utf8"))
             print("good!client has login now.")
             infos=self.recv(client_sock)
-            if infos[2]==b'\x02':
-                print(infos)
+            #if infos[2]==b'\x02':
+            #    print(infos)
             port=struct.unpack("!H",infos[2:4])[0]
             ip=struct.unpack("!I",infos[4:8])[0]
             dst_host_port=port
@@ -111,7 +111,7 @@ class server:
                     self.sem.release()
                     return
                 print("recv from dst host.")
-                print(dst_host_recv)
+                print(len(dst_host_recv))
                 self.send(client_sock,dst_host_recv)
                 print("send to client.")
             except:
