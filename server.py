@@ -42,7 +42,9 @@ class server:
         #print(r)
         return r
     def run(self):
-        self.dnsproxy.run()
+        th =threading.Thread(target=self.dnsproxy.run)
+        th.start()
+        self.threads.append(th)
         while True:
             client_sock,client_addr=self.local_sock.accept()
             th =threading.Thread(target=self.loop,args=[client_sock,client_addr])
