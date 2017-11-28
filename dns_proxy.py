@@ -18,7 +18,7 @@ class dnsproxy:
     def loop(self,iedata,ieaddr):
         self.thread_sem.acquire()
         #print(ieaddr)
-        #print(str(iedata))
+        print("dns request:"+str(iedata))
         remote_sock=socket.socket(type=socket.SOCK_DGRAM)
         remote_sock.sendto(iedata,self.remote_dns_addr)
         remote_data,remote_add=remote_sock.recvfrom(self.buffersize)
