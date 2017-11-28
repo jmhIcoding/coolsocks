@@ -27,12 +27,14 @@ class dnsproxy:
         local_sock=socket.socket(type=socket.SOCK_DGRAM)
         local_sock.sendto(remote_data,ieaddr)
         self.thread_sem.release()
-    def run(self):
+    def server_run(self):
         while True:
             iedata,ieaddr=self.proxy_sock.recvfrom(self.buffersize)
             th = threading.Thread(target=self.loop,args=[iedata,ieaddr])
             th.start()
             self.threads.append(th)
+    def local_run(self):
+        pass
 '''
 dns=dnsproxy(dns_server)
 dns.run()

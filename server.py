@@ -21,6 +21,11 @@ class server:
         self.serverip=configs["server_ip"]
         self.serverport=configs["server_port"]
         self.dns_server=configs["dns_server"]
+        self.server_dns_port=configs["server_dns_port"]
+        self.server_dns_sock=socket.socket()
+        self.server_dns_sock.bind((self.serverip,self.server_dns_port))
+        self.server_dns_sock.listen(define.MAXLISTENING)
+        print("#"*30+"dns server load....")
         self.dnsproxy=dnsproxy(self.dns_server)
         self.local_sock=socket.socket()
         self.local_sock.bind((self.serverip,self.serverport))
@@ -41,15 +46,47 @@ class server:
         #print("rc4 decrypto recv ")
         #print(r)
         return r
-    def run(self):
-        th =threading.Thread(target=self.dnsproxy.run)
+    def dns_loop(self,request_dns_sock,reques_dns_addr):
+        try:
+            login_infos=self.recv(request_dns_sock)
+
+            if login_infos!=bytes(self.hellopkt,encoding="utf8"):
+                self.send(request_dns_sock,bytes("error!!"))
+                request_dns_sock.close()
+                return
+            else:
+                self.send(request_dns_sock,bytes("good!!",encoding="utf8"))
+            print("good!client has login now.")
+            print("dns request from channel")
+            request_dns_data=self.recv(request_dns_sock) #recv dns request datagram
+            dns_sock=socket.socket(type=socket.SOCK_DGRAM)
+            dns_sock.sendto(request_dns_data,("127.0.0.1",53))
+            response_dns_data,response_dns_addr=dns_sock.recvfrom(define.BUFFERSIZE)
+            self.send(request_dns_sock,response_dns_data)
+        except:
+            pass
+    def dns_run(self):
+        th =threading.Thread(target=self.dnsproxy.server_run)
         th.start()
         self.threads.append(th)
+        while True:
+            request_dns_sock,request_dns_addr=self.server_dns_sock.accept()
+            th =threading.Thread(target=self.dns_loop,args=[request_dns_sock,request_dns_addr])
+            th.start()
+            self.threads.append(th)
+    def proxy_run(self):
         while True:
             client_sock,client_addr=self.local_sock.accept()
             th =threading.Thread(target=self.loop,args=[client_sock,client_addr])
             th.start()
             self.threads.append(th)
+    def run(self):
+        th=threading.Thread(target=self.dns_run)
+        th.start()
+        self.threads.append(th)
+        th=threading.Thread(target=self.proxy_run)
+        th.start()
+        self.threads.append(th)
 
     def loop(self,client_sock,client_addr):
         try:
