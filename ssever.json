@@ -1,6 +1,6 @@
 {
   "type":"server",
-  "server_ip":"127.0.0.1",
+  "server_ip":":67.218.148.94",
   "server_port":9091,
   "password":"12345678uestc",
   "dns_server":"8.8.8.8"
