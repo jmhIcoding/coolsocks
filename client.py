@@ -53,6 +53,7 @@ class client:
         os.system("netsh interface ip set dns \"以太网\" static %s"%define.LOCALADDRESS)
         self.sem=threading.Semaphore(define.MAXLISTENING)
         self.local_local_dns_sock=socket.socket(type=socket.SOCK_DGRAM)
+        self.local_local_dns_sock.bind((define.LOCALADDRESS,53))
         #self.server_dns_lock=threading.Semaphore(1)
     def dns_loop(self,dns_request_data,dns_request_addr):
         #self.server_dns_lock.acquire()
