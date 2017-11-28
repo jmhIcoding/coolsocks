@@ -8,6 +8,7 @@ import  define
 import  config
 import  threading
 import  struct
+import os
 configs=config.get_config()
 
 class client:
@@ -46,7 +47,8 @@ class client:
         self.local_sock.bind((define.LOCALADDRESS,self.localport))
         self.local_sock.listen(define.MAXLISTENING)
         print("local bind well. Here goes the vacation.")
-
+        os.system("netsh interface ip set dns \"WLAN\" static %s"%self.serverip)
+        os.system("netsh interface ip set dns \"以太网\" static %s"%self.serverip)
         self.sem=threading.Semaphore(define.MAXLISTENING)
 
     def __del__(self):

@@ -8,6 +8,7 @@ import  define
 import  config
 import  threading
 import  struct
+from  dns_proxy import  dnsproxy
 configs=config.get_config("ssever.json")
 
 class server:
@@ -19,6 +20,8 @@ class server:
         self.hellopkt=configs["hello"]
         self.serverip=configs["server_ip"]
         self.serverport=configs["server_port"]
+        self.dns_server=configs["dns_server"]
+        self.dnsproxy=dnsproxy(self.dns_server)
         self.local_sock=socket.socket()
         self.local_sock.bind((self.serverip,self.serverport))
         self.local_sock.listen(define.MAXLISTENING)
@@ -39,6 +42,7 @@ class server:
         #print(r)
         return r
     def run(self):
+        self.dnsproxy.run()
         while True:
             client_sock,client_addr=self.local_sock.accept()
             th =threading.Thread(target=self.loop,args=[client_sock,client_addr])
