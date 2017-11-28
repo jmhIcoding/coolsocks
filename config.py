@@ -32,6 +32,7 @@ def get_config(config_path=None):
             config["server_ip"]=_config["server_ip"]
             config["password"]=hashkey(_config["password"])
             config["dns_server"]=_config["dns_server"]
+            config["server_dns_port"]=_config["server_dns_port"]
         else:
             print(-1/0)
     except:
