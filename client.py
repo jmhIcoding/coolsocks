@@ -56,13 +56,13 @@ class client:
         #self.server_dns_lock=threading.Semaphore(1)
     def dns_loop(self,dns_request_data,dns_request_addr):
         #self.server_dns_lock.acquire()
-        print("dns request",dns_request_data)
+        #print("dns request",dns_request_data)
         server_dns_sock=self.gen_server_sock(self.server_dns_port)
         self.send(server_dns_sock,dns_request_data)
         response_dns_data=self.recv(server_dns_sock)
         #self.server_dns_lock.release()
         res_dns_sock=socket.socket(type=socket.SOCK_DGRAM)
-        print("dns response",response_dns_data)
+        #print("dns response",response_dns_data)
         res_dns_sock.sendto(response_dns_data,dns_request_addr)
         server_dns_sock.close()
     def dns_run(self):
@@ -162,6 +162,7 @@ class client:
                 self.send(server_sock,data)
                 print("send to host.")
             except:
+                iesock.close()
                 self.sem.release()
                 return
 
@@ -179,6 +180,7 @@ class client:
                 #print(server_recv)
                 print("send to ie.")
             except:
+                server_sock.close()
                 self.sem.release()
                 return
 coolsock_client=client(configs)
