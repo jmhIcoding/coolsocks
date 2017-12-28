@@ -7,8 +7,6 @@ import socket
 import  define
 import  config
 import  threading
-import  struct
-import  dns_proxy
 import os
 configs=config.get_config()
 
@@ -32,7 +30,7 @@ class client:
             #try to login in remote server
             info=self.recv(self.server_dns_sock,define.BUFFERSIZE)
         except:
-            print("Connnect server error. Please check the configure file.")
+            print("Connnect server error. Please check the network.")
             self.server_state=False
             exit(1)
         #print(info)
@@ -100,13 +98,14 @@ class client:
             server_port=self.serverport
         server_sock=socket.socket()
         server_sock.connect((self.serverip,server_port))
-        server_sock.send(rc4(self.prepwd,self.hellopkt))
-        #try to login in remote server
-        info=self.recv(server_sock,define.BUFFERSIZE)
-        #print(info)
-        if info!=bytes("good!!",encoding="utf8"):
-            print("connnect server error. Please check the configure file.")
-            exit(1)
+        if self.server_state==False:
+            server_sock.send(rc4(self.prepwd,self.hellopkt))
+            #try to login in remote server
+            info=self.recv(server_sock,define.BUFFERSIZE)
+            #print(info)
+            if info!=bytes("good!!",encoding="utf8"):
+                print("connnect server error. Please check the configure file.")
+                exit(1)
         return server_sock
     def send(self,sock,data):
         #print("prepare encrypt....")

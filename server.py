@@ -25,6 +25,7 @@ class server:
         self.server_dns_sock=socket.socket()
         self.server_dns_sock.bind((self.serverip,self.server_dns_port))
         self.server_dns_sock.listen(define.MAXLISTENING)
+        self.client_login_state={}
         print("#"*30+"dns server load....")
         self.dnsproxy=dnsproxy(self.dns_server)
         self.local_sock=socket.socket()
@@ -90,15 +91,17 @@ class server:
 
     def loop(self,client_sock,client_addr):
         try:
-            login_infos=self.recv(client_sock)
+            if self.client_login_state.get(client_addr,False)==False:
+                login_infos=self.recv(client_sock)
 
-            if login_infos!=bytes(self.hellopkt,encoding="utf8"):
-                self.send(client_sock,bytes("error!!"))
-                client_sock.close()
-                return
-            else:
-                self.send(client_sock,bytes("good!!",encoding="utf8"))
-            print("good!client has login now.")
+                if login_infos!=bytes(self.hellopkt,encoding="utf8"):
+                    self.send(client_sock,bytes("error!!"))
+                    client_sock.close()
+                    return
+                else:
+                    self.send(client_sock,bytes("good!!",encoding="utf8"))
+                print("good!client has login now.")
+                self.client_login_state.setdefault(client_addr,True)
             infos=self.recv(client_sock)
             #if infos[2]==b'\x02':
             #    print(infos)

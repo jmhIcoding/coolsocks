@@ -18,6 +18,7 @@ def rc4(_prepwd,_cipher,iKeyLen=None):
     :param iKeyLen: 密钥长度
     :return:密文或明文
     '''
+    global Sbox
     if type(_prepwd)==type("abcd"):
         _prepwd=hashkey(_prepwd)
     if type(_cipher)==type("abcd"):

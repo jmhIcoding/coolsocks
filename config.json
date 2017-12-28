@@ -3,6 +3,6 @@
   "local_port":9090,
   "server_ip":"67.218.148.94",
   "server_port":9091,
-  "server_dns_port":10000,
+  "server_dns_port":9099,
   "password":"12345678uestc"
 }
