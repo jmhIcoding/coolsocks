@@ -10,15 +10,14 @@ from  crypto.basetool import bytes2str
 import  threading
 
 lock=threading.Semaphore(1)
-
+Sbox=None
 def rc4(_prepwd,_cipher,iKeyLen=None):
     '''
     :param _prepwd: 预主密钥
     :param _cipher: 密文或者明文
     :param iKeyLen: 密钥长度
-    :return:
+    :return:密文或明文
     '''
-    #lock.acquire()
     if type(_prepwd)==type("abcd"):
         _prepwd=hashkey(_prepwd)
     if type(_cipher)==type("abcd"):
@@ -26,37 +25,27 @@ def rc4(_prepwd,_cipher,iKeyLen=None):
     _prepwd=struct.pack("!H",_prepwd)
     if iKeyLen==None:
         iKeyLen=len(_prepwd)
-    Sbox=[]
-    Key=[]
-    for i in range(256):
-        Sbox.append(i)
-        Key.append(0)
-    Sbox[0]=127
 
-    k=0
-    for i in range(256):
-        Key[i]=_prepwd[k]
-        k=(k+1)%iKeyLen
-    Sbox[0]=_prepwd[0]%256
-    #print(Sbox[0])
-    '''
-    j=0
-    for i in  range(256):
-        j=(j+Sbox[i]+Key[i])%256
-        tmp=Sbox[i]
-        Sbox[i]=Sbox[j]
-        Sbox[j]=tmp
-    '''
+    if Sbox==None:
+        Sbox=[]
+        Key=[]
+        for i in range(256):
+            Sbox.append(i)
+            Key.append(0)
+        Sbox[0]=127
 
-    '''
-    加密
-    '''
+        k=0
+        for i in range(256):
+            Key[i]=_prepwd[k]
+            k=(k+1)%iKeyLen
+            Sbox[0]+=(Key[i]%256)
+        Sbox[0]%=256
+
     rst=b''
     j=0
     i=0
     cil=len(_cipher)
     while True:
-        #print(i,len(_cipher))
         if i>=len(_cipher):
             break
         if i < cil:
@@ -68,7 +57,6 @@ def rc4(_prepwd,_cipher,iKeyLen=None):
         _new=struct.pack("!B",_new)
         rst+=_new
         i=i+1
-    #lock.release()
     return rst
 def test_rc4():
     plaintext=b"\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6\x01\x02\xea\xb6\xea\xb6"
