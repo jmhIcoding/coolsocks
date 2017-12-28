@@ -47,17 +47,19 @@ class server:
         #print("rc4 decrypto recv ")
         #print(r)
         return r
-    def dns_loop(self,request_dns_sock,reques_dns_addr):
+    def dns_loop(self,request_dns_sock,request_dns_addr):
         try:
-            login_infos=self.recv(request_dns_sock)
+            if self.client_login_state.get(request_dns_addr[0],False)==False:
+                login_infos=self.recv(request_dns_sock)
 
-            if login_infos!=bytes(self.hellopkt,encoding="utf8"):
-                self.send(request_dns_sock,bytes("error!!"))
-                request_dns_sock.close()
-                return
-            else:
-                self.send(request_dns_sock,bytes("good!!",encoding="utf8"))
-            print("good!client has login now.")
+                if login_infos!=bytes(self.hellopkt,encoding="utf8"):
+                    self.send(request_dns_sock,bytes("error!!"))
+                    request_dns_sock.close()
+                    return
+                else:
+                    self.send(request_dns_sock,bytes("good!!",encoding="utf8"))
+                print("good!client has login now.")
+                self.client_login_state.setdefault(request_dns_addr[0],True)
             print("dns request from channel")
             request_dns_data=self.recv(request_dns_sock) #recv dns request datagram
             dns_sock=socket.socket(type=socket.SOCK_DGRAM)
