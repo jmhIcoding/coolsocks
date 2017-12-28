@@ -22,6 +22,7 @@ class client:
         self.localport=configs['local_port']
         self.server_dns_port=configs["server_dns_port"]
         self.threads=[]
+        self.server_state=False
         try:
             self.server_dns_sock=socket.socket()
             self.server_dns_sock.connect((self.serverip,self.serverport))
@@ -106,6 +107,7 @@ class client:
             if info!=bytes("good!!",encoding="utf8"):
                 print("connnect server error. Please check the configure file.")
                 exit(1)
+            self.server_state=True
         return server_sock
     def send(self,sock,data):
         #print("prepare encrypt....")

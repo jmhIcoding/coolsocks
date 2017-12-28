@@ -91,7 +91,7 @@ class server:
 
     def loop(self,client_sock,client_addr):
         try:
-            if self.client_login_state.get(client_addr,False)==False:
+            if self.client_login_state.get(client_addr[0],False)==False:
                 login_infos=self.recv(client_sock)
 
                 if login_infos!=bytes(self.hellopkt,encoding="utf8"):
@@ -101,7 +101,7 @@ class server:
                 else:
                     self.send(client_sock,bytes("good!!",encoding="utf8"))
                 print("good!client has login now.")
-                self.client_login_state.setdefault(client_addr,True)
+                self.client_login_state.setdefault(client_addr[0],True)
             infos=self.recv(client_sock)
             #if infos[2]==b'\x02':
             #    print(infos)
