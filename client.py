@@ -124,7 +124,7 @@ class client:
     def loop(self,iesock,ieaddr):
         try:
             infos=iesock.recv(define.BUFFERSIZE)
-            print('from ie ')#infos)
+            #print('from ie ')#infos)
             data=infos
             server_sock=self.gen_server_sock()
             self.send(server_sock,data)
@@ -156,11 +156,11 @@ class client:
                     iesock.close()
                     self.sem.release()
                     return
-                print("recv from ie")
+                #print("recv from ie")
                 #print(info)
                 data=info
                 self.send(server_sock,data)
-                print("send to host.")
+                #print("send to host.")
             except:
                 iesock.close()
                 self.sem.release()
@@ -174,11 +174,11 @@ class client:
                     server_sock.close()
                     self.sem.release()
                     return
-                print("recv from host.")
+                #print("recv from host.")
                 #print(server_recv)
                 iesock.send(server_recv)
                 #print(server_recv)
-                print("send to ie.")
+                #print("send to ie.")
             except:
                 server_sock.close()
                 self.sem.release()
